@@ -1,26 +1,23 @@
 require_relative "word_stem"
 
 class WordList
-  def initialize(input_filename)
+  def initialize
+    @root = WordStem.new
+  end
 
-    @root_stems = Array.new(26) {|index|
-      WordStem.new
-    }
-
+  def build_from_file(input_filename)
     File.open(input_filename).each do |word|
-      add(word)
+      word.chomp!
+      add(word.downcase)
     end
   end
 
-  def contains?(stem)
-
+  def add(word)
+    @root.build_out(word)
   end
 
-  private
-
-  def add(word)
-    root_index = WordStem.letter_index(word.chr)
-    @root_stems[root_index].build_out(word)
+  def find(stem)
+    @root.find(stem)
   end
 
 end

@@ -1,13 +1,44 @@
+require "set"
+
 class Solver
-  def initialize(board)
+  def initialize(board, words)
     @game_board = board
-    @best_word = nil
-    @best_score = nil
-    @current_score = 0
-    @current_stem = nil
+    @word_list = words
+    @longest_word = nil
+    @visited_coords = Set.new
   end
 
-  def solve(starting_row, starting_col)
+  attr_reader :longest_word
 
+  def solve(row, col, current_stem = "")
+
+    @visited_coords.add([row, col].to_s)
+
+    # Add on this next char, and see if it's valid.
+    current_stem << @game_board.char_at(row, col)
+
+    word_stem = @word_list.find(current_stem)
+    if word_stem
+
+      # Check if this should be the new "best" candidate
+      if word_stem.terminal && (@longest_word.nil? || current_stem.length > @longest_word.length)
+        @longest_word = current_stem
+      end
+
+      possible_expansion_coords = @game_board.next_possible_coords(row, col)
+
+      possible_expansion_coords.each do |coords|
+        next_row = coords[0]
+        next_col = coords[1]
+        solve(next_row, next_col, current_stem.dup) unless @visited_coords.include?(coords.to_s)
+      end
+
+    else
+      # This stem is not for a valid word...give up on this path
+    end
+
+    # Once we've traversed through this coord, we can unwind it from the visited list
+    @visited_coords.delete([row, col].to_s)
   end
+
 end
