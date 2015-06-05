@@ -4,11 +4,23 @@ class Solver
   def initialize(board, words)
     @game_board = board
     @word_list = words
-    @longest_word = nil
     @visited_coords = Set.new
+    @stats = {
+      longest_word: nil,
+      most_reaching_words: Set.new,
+      farthest_distance: 0,
+      starting_row: nil,
+      direction: 0
+    }
   end
 
   attr_reader :longest_word
+  attr_reader :stats
+
+  def prepare_distance_calc(options = {})
+    @stats[:starting_row] = options[:starting_row]
+    @stats[:direction] = options[:direction] # +1 means going downward, -1 means upward
+  end
 
   def solve(row, col, current_stem = "")
 
@@ -21,8 +33,21 @@ class Solver
     if word_stem
 
       # Check if this should be the new "best" candidate
-      if word_stem.terminal && (@longest_word.nil? || current_stem.length > @longest_word.length)
-        @longest_word = current_stem
+      if word_stem.terminal
+        if @stats[:longest_word].nil? || current_stem.length > @stats[:longest_word].length
+          @stats[:longest_word] = current_stem
+        end
+
+        if @stats[:starting_row]
+          distance = (row - @stats[:starting_row]) * @stats[:direction]
+
+          if distance >= @stats[:farthest_distance]
+            @stats[:most_reaching_words].clear if distance > @stats[:farthest_distance]
+            @stats[:farthest_distance] = distance
+            @stats[:most_reaching_words].add(current_stem)
+          end
+
+        end
       end
 
       possible_expansion_coords = @game_board.next_possible_coords(row, col)

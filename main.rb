@@ -4,7 +4,7 @@ require_relative "solver"
 
 # Main routine
 word_list = WordList.new
-word_list.build_from_file("wordlist.txt")
+word_list.build_from_file("twl06.txt")
 board = GameBoard.new
 
 puts "Input board file: "
@@ -19,7 +19,14 @@ row = gets.strip.to_i
 puts "Starting col (use '*' for entire row): "
 col = gets.strip
 
+puts "Compute farthest distance ? (1 = downward, -1 = upward, 0 = skip): "
+directionality = gets.strip.to_i
+
 solver = Solver.new(board, word_list)
+if directionality != 0
+  solver.prepare_distance_calc(starting_row: row, direction: directionality)
+end
+
 if col == "*"
   for c in 0..board.width-1
     solver.solve(row, c)
@@ -30,4 +37,5 @@ else
 end
 
 puts "Completed"
-puts "Longest word = #{solver.longest_word}"
+puts "Stats: "
+puts solver.stats
