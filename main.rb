@@ -22,9 +22,13 @@ col = gets.strip
 puts "Compute farthest distance ? (1 = downward, -1 = upward, 0 = skip): "
 directionality = gets.strip.to_i
 
+puts "Min length to store [Enter=5]: "
+min_length_to_store = gets.strip.to_i
+min_length_to_store = 5 if min_length_to_store <= 0
+
 solver = Solver.new(board, word_list)
 if directionality != 0
-  solver.prepare_distance_calc(starting_row: row, direction: directionality)
+  solver.prepare_distance_calc(starting_row: row, direction: directionality, min_length: min_length_to_store)
 end
 
 if col == "*"
