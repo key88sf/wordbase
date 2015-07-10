@@ -3,15 +3,21 @@ require_relative "game_board"
 require_relative "solver"
 
 # Main routine
+if ARGV.size < 1
+  puts "Usage: main.rb <board file>"
+  exit(1)
+end
+
 word_list = WordList.new
 word_list.build_from_file("twl06.txt")
 board = GameBoard.new
 
-puts "Input board file: "
-input_file = gets.strip
+input_file = ARGV[0]
 board.read_from_file(input_file)
 puts "Board:"
 puts board
+
+ARGV.clear
 
 puts "Starting row: "
 row = gets.strip.to_i
