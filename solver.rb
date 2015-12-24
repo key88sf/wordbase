@@ -19,6 +19,15 @@ class Solver
   attr_reader :longest_word
   attr_reader :stats
 
+  def display_stats
+    puts "Longest word: #{stats[:longest_word]}"
+    puts
+    puts "Most Reaching Words: #{stats[:most_reaching_words].to_a.sort.join(", ")}"
+    puts
+    puts "All Words:"
+    puts stats[:all_words].to_a.sort.join(", ")
+  end
+
   def prepare_distance_calc(options = {})
     @stats[:starting_row] = options[:starting_row]
     @stats[:direction] = options[:direction] # +1 means going downward, -1 means upward

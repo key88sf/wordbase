@@ -48,4 +48,4 @@ end
 
 puts "Completed"
 puts "Stats: "
-puts solver.stats
+puts solver.display_stats
